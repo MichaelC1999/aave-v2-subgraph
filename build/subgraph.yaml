@@ -1,6 +1,6 @@
 specVersion: 0.0.2
 schema:
-  file: ./schema-lending.graphql
+  file: schema-lending.graphql
 dataSources:
   - kind: ethereum
     name: LendingPoolAddressesProviderRegistry
@@ -18,7 +18,7 @@ dataSources:
         - OwnershipTransferred
       abis:
         - name: LendingPoolAddressesProviderRegistry
-          file: ./abis/LendingPoolAddressesProviderRegistry.json
+          file: LendingPoolAddressesProviderRegistry/abis/LendingPoolAddressesProviderRegistry.json
       eventHandlers:
         - event: AddressesProviderRegistered(indexed address)
           handler: handleAddressesProviderRegistered
@@ -26,7 +26,7 @@ dataSources:
           handler: handleAddressesProviderUnregistered
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
-      file: ./src/mappings/lendingPoolAddressProvider.ts
+      file: LendingPoolAddressesProviderRegistry/LendingPoolAddressesProviderRegistry.wasm
 templates:
   - kind: ethereum/contract
     name: LendingPoolAddressesProvider
@@ -41,7 +41,7 @@ templates:
         - LendingPoolAddressesProvider
       abis:
         - name: LendingPoolAddressesProvider
-          file: ./abis/LendingPoolAddressesProvider.json
+          file: LendingPoolAddressesProvider/abis/LendingPoolAddressesProvider.json
       eventHandlers:
         - event: ProxyCreated(bytes32,indexed address)
           handler: handleProxyCreated
@@ -51,10 +51,7 @@ templates:
           handler: handleLendingPoolUpdated
         - event: LendingPoolConfiguratorUpdated(indexed address)
           handler: handleLendingPoolConfiguratorUpdated
-        # - event: AddressSet(bytes32,indexed address,bool) #new
-        #   handler: handleAddressSet
-      file: ./src/mappings/lendingPoolAddressProvider.ts
-
+      file: LendingPoolAddressesProviderRegistry/LendingPoolAddressesProviderRegistry.wasm
   - kind: ethereum/contract
     name: LendingPool
     network: mainnet
@@ -75,17 +72,18 @@ templates:
         - PositionSnapshot
       abis:
         - name: LendingPool
-          file: ./abis/LendingPool.json
+          file: LendingPool/abis/LendingPool.json
         - name: IERC20
-          file: ./abis/IERC20.json
+          file: LendingPool/abis/IERC20.json
         - name: IPriceOracleGetter
-          file: ./abis/IPriceOracleGetter.json
+          file: LendingPool/abis/IPriceOracleGetter.json
       eventHandlers:
         - event: Deposit(indexed address,address,indexed address,uint256,indexed uint16)
           handler: handleDeposit
         - event: Withdraw(indexed address,indexed address,indexed address,uint256)
           handler: handleWithdraw
-        - event: Borrow(indexed address,address,indexed address,uint256,uint256,uint256,indexed uint16)
+        - event: Borrow(indexed address,address,indexed address,uint256,uint256,uint256,indexed
+            uint16)
           handler: handleBorrow
         - event: Repay(indexed address,indexed address,indexed address,uint256)
           handler: handleRepay
@@ -93,12 +91,12 @@ templates:
           handler: handleSwap
         - event: FlashLoan(indexed address,indexed address,indexed address,uint256,uint256,uint16)
           handler: handleFlashLoan
-        - event: LiquidationCall(indexed address,indexed address,indexed address,uint256,uint256,address,bool)
+        - event: LiquidationCall(indexed address,indexed address,indexed
+            address,uint256,uint256,address,bool)
           handler: handleLiquidationCall
         - event: ReserveDataUpdated(indexed address,uint256,uint256,uint256,uint256,uint256)
           handler: handleReserveDataUpdated
-      file: ./src/mappings/lendingPool.ts
-
+      file: templates/LendingPool/LendingPool.wasm
   - kind: ethereum/contract
     name: LendingPoolConfigurator
     network: mainnet
@@ -119,13 +117,13 @@ templates:
         - PositionSnapshot
       abis:
         - name: LendingPoolConfigurator
-          file: ./abis/LendingPoolConfigurator.json
+          file: LendingPoolConfigurator/abis/LendingPoolConfigurator.json
         - name: LendingPool
-          file: ./abis/LendingPool.json
+          file: LendingPoolConfigurator/abis/LendingPool.json
         - name: IERC20
-          file: ./abis/IERC20.json
+          file: LendingPoolConfigurator/abis/IERC20.json
         - name: IPriceOracleGetter
-          file: ./abis/IPriceOracleGetter.json
+          file: LendingPoolConfigurator/abis/IPriceOracleGetter.json
       eventHandlers:
         - event: ReserveInitialized(indexed address,indexed address,address,address,address)
           handler: handleReserveInitialized
@@ -138,8 +136,8 @@ templates:
         - event: ReserveActivated(indexed address)
           handler: handleReserveActivated
         - event: ReserveDeactivated(indexed address)
-          handler: handleReserveDeactivated  
-      file: ./src/mappings/lendingPoolConfigurator.ts
+          handler: handleReserveDeactivated
+      file: templates/LendingPoolConfigurator/LendingPoolConfigurator.wasm
   - kind: ethereum/contract
     name: AToken
     network: mainnet
@@ -153,20 +151,21 @@ templates:
         - AToken
       abis:
         - name: AToken
-          file: ./abis/AToken.json
+          file: AToken/abis/AToken.json
         - name: AaveIncentivesController
-          file: ./abis/AaveIncentivesController.json
+          file: AToken/abis/AaveIncentivesController.json
         - name: LendingPool
-          file: ./abis/LendingPool.json
+          file: AToken/abis/LendingPool.json
         - name: IERC20
-          file: ./abis/IERC20.json
+          file: AToken/abis/IERC20.json
         - name: IPriceOracleGetter
-          file: ./abis/IPriceOracleGetter.json
+          file: AToken/abis/IPriceOracleGetter.json
       eventHandlers:
         - event: Burn(indexed address,indexed address,uint256,uint256)
           handler: handleATokenBurn
         - event: Mint(indexed address,uint256,uint256)
           handler: handleATokenMint
-        - event: Initialized(indexed address,indexed address,address,address,uint8,string,string,bytes)
+        - event: Initialized(indexed address,indexed
+            address,address,address,uint8,string,string,bytes)
           handler: handleATokenInitialized
-      file: src/mappings/aToken.ts
+      file: templates/AToken/AToken.wasm
